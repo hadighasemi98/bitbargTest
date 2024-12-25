@@ -1,57 +1,59 @@
 version: "3.8"
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: laravel-app
-    container_name: laravel-app
-    restart: unless-stopped
-    working_dir: /var/www
-    volumes:
-      - .:/var/www
-    networks:
-      - app-network
-    ports:
-      - "9000:9000"
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: laravel-app
+        container_name: laravel-app
+        restart: unless-stopped
+        working_dir: /var/www
+        volumes:
+            - .:/var/www
+        networks:
+            - app-network
+        ports:
+            - "9000:9000"
 
-  webserver:
-    image: nginx:alpine
-    container_name: nginx
-    restart: unless-stopped
-    ports:
-      - "80:80"
-    volumes:
-      - .:/var/www
-      - ./nginx/conf.d:/etc/nginx/conf.d
-    networks:
-      - app-network
+    webserver:
+        image: nginx:alpine
+        container_name: nginx
+        restart: unless-stopped
+        ports:
+            - "80:80"
+        volumes:
+            - .:/var/www
+            - ./nginx/conf.d:/etc/nginx/conf.d
+        networks:
+            - app-network
 
-  db:
-    image: postgres:13
-    container_name: postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: laravel
-      POSTGRES_USER: laravel
-      POSTGRES_PASSWORD: secret
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    networks:
-      - app-network
+    redis:
+        image: redis:alpine
+        container_name: redis
+        restart: unless-stopped
+        networks:
+            - app-network
 
-  redis:
-    image: redis:alpine
-    container_name: redis
-    restart: unless-stopped
-    networks:
-      - app-network
+    db:
+        image: postgres:13
+        container_name: postgres
+        restart: unless-stopped
+        environment:
+            POSTGRES_DB: laravel
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: 123456789
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+        networks:
+            - app-network
 
 networks:
-  app-network:
-    driver: bridge
+    app-network:
+        driver: bridge
 
 volumes:
-  postgres-data:
-    driver: local
+    postgres-data:
+        driver: local
