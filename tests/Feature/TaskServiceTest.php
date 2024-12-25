@@ -20,7 +20,7 @@ class TaskServiceTest extends TestCase
         $this->actingAs($this->user);
     }
 
-    public function test_index(): void
+    public function test_must_return_all_task_of_user_with_paginate(): void
     {
         Task::factory()->count(3)->create(['user_id' => $this->user->id]);
 
