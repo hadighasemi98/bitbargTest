@@ -2,10 +2,7 @@ version: "3.8"
 
 services:
     app:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        image: laravel-app
+        image: bitbarg:0.6
         container_name: laravel-app
         restart: unless-stopped
         working_dir: /var/www
@@ -14,19 +11,7 @@ services:
         networks:
             - app-network
         ports:
-            - "9000:9000"
-
-    webserver:
-        image: nginx:alpine
-        container_name: nginx
-        restart: unless-stopped
-        ports:
-            - "80:80"
-        volumes:
-            - .:/var/www
-            - ./nginx/conf.d:/etc/nginx/conf.d
-        networks:
-            - app-network
+            - "8080:8080"
 
     redis:
         image: redis:alpine

@@ -10,7 +10,12 @@ class Task extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'status','due_date', 'user_id'];
+    protected $fillable = ['title', 'description', 'status', 'due_date', 'user_id'];
+
+    public const STATUS = [
+        'pending' => 0,
+        'completed' => 1,
+    ];
 
     public function user(): BelongsTo
     {

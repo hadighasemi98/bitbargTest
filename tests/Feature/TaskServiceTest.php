@@ -11,6 +11,8 @@ class TaskServiceTest extends TestCase
 {
     use RefreshDatabase;
 
+    private User $user;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -115,5 +117,45 @@ class TaskServiceTest extends TestCase
             ->assertJson(['message' => 'Task deleted successfully']);
 
         $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
+    }
+
+    public function test_mark_as_completed()
+    {
+        $user = User::factory()->create();
+        $task = Task::factory()->create(['user_id' => $user->id, 'status' => 'pending']);
+        $this->artisan('db:seed', ['--class' => 'RolesAndPermissionsSeeder']);
+
+        $this->actingAs($user, 'api')
+            ->patchJson(route('tasks.complete', ['id' => $task->id]))
+            ->assertStatus(200)
+            ->assertJson([
+                'success' => true,
+                'message' => 'Task marked as completed',
+            ]);
+
+        $this->assertDatabaseHas('tasks', [
+            'id' => $task->id,
+            'status' => 'completed',
+        ]);
+    }
+
+    public function test_mark_as_pending()
+    {
+        $user = User::factory()->create();
+        $task = Task::factory()->create(['user_id' => $user->id, 'status' => 'completed']);
+        $this->artisan('db:seed', ['--class' => 'RolesAndPermissionsSeeder']);
+
+        $this->actingAs($user, 'api')
+            ->patchJson(route('tasks.pending', ['id' => $task->id]))
+            ->assertStatus(200)
+            ->assertJson([
+                'success' => true,
+                'message' => 'Task marked as pending',
+            ]);
+
+        $this->assertDatabaseHas('tasks', [
+            'id' => $task->id,
+            'status' => 'pending',
+        ]);
     }
 }
