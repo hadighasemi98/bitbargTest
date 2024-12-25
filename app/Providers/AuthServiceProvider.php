@@ -4,6 +4,8 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -21,6 +23,18 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->registerPolicies();
+
+        Passport::tokensCan(scopes: [
+            'create-tasks' => 'Create tasks',
+            'read-tasks' => 'Read tasks',
+            'update-tasks' => 'Update tasks',
+            'delete-tasks' => 'Delete tasks',
+        ]);
+
+        Gate::define(ability: 'check_role', callback: function ($user, $role) {
+            return $user->hasRole($role);
+        });
+
     }
 }
