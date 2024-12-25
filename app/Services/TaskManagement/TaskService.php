@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Services\TaskManagement;
 
 use App\Http\Requests\Task\CreateTaskRequest;
 use App\Http\Requests\Task\UpdateTaskRequest;
@@ -34,7 +34,7 @@ class TaskService
         return response()->json(['success' => true, 'data' => $task]);
     }
 
-    public function update(UpdateTaskRequest $request, $id): JsonResponse
+    public function update(UpdateTaskRequest $request, int $id): JsonResponse
     {
         $task = Task::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();
 
