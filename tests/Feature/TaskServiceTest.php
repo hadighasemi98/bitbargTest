@@ -20,7 +20,7 @@ class TaskServiceTest extends TestCase
         $this->actingAs($this->user);
     }
 
-    public function test_index(): void
+    public function test_index_shoukld_aklsdas(): void
     {
         Task::factory()->count(3)->create(['user_id' => $this->user->id]);
 
