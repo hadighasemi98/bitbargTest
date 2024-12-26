@@ -42,6 +42,32 @@ This project is a Task Management System designed to challenge the technical ski
    - Dockerize the application for easy deployment and scalability.
    - Use Docker Compose to manage application services (Laravel, PostgreSQL, Redis).
 
+## Docker Setup
+
+To build and run the application using Docker and Docker Compose, follow these steps:
+
+### Step 1: Build the Docker Images
+
+Run the following command to build the Docker images:
+
+```sh
+docker-compose build
+```
+
+### Step 2: Start the Docker Containers
+Run the following command to start the Docker containers:
+```sh
+docker-compose up -d
+```
+
+### Step 3: Run Migrations and Seeders
+After starting the containers, you need to run the migrations and seeders to set up the database schema and initial data. Run the following commands:
+```sh
+docker-compose exec app php artisan migrate
+docker-compose exec app php artisan db:seed
+```
+
+
 ## Authentication Service
 
 ### Registration
