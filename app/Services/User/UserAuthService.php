@@ -9,6 +9,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * @test Tests\Feature\AuthControllerTest
+ */
 class UserAuthService
 {
     public function register(SignUpRequest $request): JsonResponse
@@ -32,20 +35,22 @@ class UserAuthService
 
     public function login(LoginRequest $request): JsonResponse
     {
+        $credentials = ['email' => $request->email, 'password' => $request->password];
 
-        if (Auth::attempt(credentials: ['email' => $request->email, 'password' => $request->password])) {
-            $user = User::where('email', $request->email)->first();
-            $token = $user->createToken('LaravelPassport')->accessToken;
-
-            return response()->json(data: [
-                'success' => true,
-                'data' => [
-                    'user' => $user,
-                    'token' => $token,
-                ],
-            ], status: 200);
+        if (! Auth::guard('web')->attempt(credentials: $credentials)) {
+            return response()->json(data: ['success' => false, 'message' => 'Unauthorized'], status: 401);
         }
 
-        return response()->json(data: ['success' => false, 'message' => 'Unauthorized'], status: 401);
+        $user = User::where('email', $request->email)->first();
+        $token = $user->createToken(name: 'user')->accessToken;
+
+        return response()->json(data: [
+            'success' => true,
+            'data' => [
+                'user' => $user,
+                'token' => $token,
+            ],
+        ], status: 200);
+
     }
 }
