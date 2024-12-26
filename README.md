@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a Task Management System designed to challenge the technical skills of candidates in PHP, Laravel, PostgreSQL, Redis, and Docker. The project focuses solely on APIs and backend functionality, evaluating the candidate’s ability to implement secure, well-structured APIs, handle role-based permissions, and work with modern backend technologies.
+This project is a Task Management System designed to challenge the technical skills of candidates in PHP, Laravel, PostgreSQL, Redis, and Docker.
 
 ## Features
 
@@ -265,18 +265,8 @@ Response:
     "success": true,
     "message": "Task marked as pending"
 }
-```
 
-## Running Tests
-
-To run the tests, use the following command:
-
-```sh
-php artisan test
-```
-
-This will execute all the feature and unit tests to ensure that the application is working correctly.
 
 ## Conclusion
 
-This documentation provides an overview of the authentication and task services, including the endpoints, request and response formats, and how to run the tests. The Task Management System is designed to be secure, well-structured, and easy to extend with additional features.
+Developer: hadighasemi.info@gmail.com
