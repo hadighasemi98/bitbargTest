@@ -4,9 +4,9 @@ namespace App\Services\TaskManagement;
 
 use App\Http\Requests\Task\CreateTaskRequest;
 use App\Http\Requests\Task\UpdateTaskRequest;
+use App\Jobs\SendLogJob;
 use App\Models\Task;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * @test Tests\Feature\TaskServiceTest
@@ -60,7 +60,7 @@ class TaskService
         ]);
         cache()->forget('tasks_user_'.auth()->user()->id);
 
-        activity()->causedBy(Auth::user()->id)->performedOn($task)->log('Updated a task');
+        $this->senLog($task);
 
         return response()->json(['success' => true, 'message' => 'Task updated successfully']);
     }
@@ -97,11 +97,16 @@ class TaskService
     {
         $task = Task::where('user_id', auth()->user()->id)->findOrFail($id);
 
-        activity()->causedBy(Auth::user()->id)->performedOn($task)->log('Deleted a task');
+        $this->senLog($task);
 
         $task->delete();
         cache()->forget('tasks_user_'.auth()->user()->id);
 
         return response()->json(['success' => true, 'message' => 'Task deleted successfully']);
+    }
+
+    private function senLog(Task $task): void
+    {
+        SendLogJob::dispatch(arguments: $task);
     }
 }
