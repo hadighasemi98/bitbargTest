@@ -8,6 +8,9 @@ use App\Models\Task;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @test Tests\Feature\TaskServiceTest
+ */
 class TaskService
 {
     public function index(): JsonResponse
