@@ -15,9 +15,13 @@ class TaskService
 {
     public function index(): JsonResponse
     {
+        $tasks = cache()->remember('tasks_user_'.auth()->user()->id, now()->addMinutes(5), function () {
+            return Task::where('user_id', auth()->user()->id)->simplePaginate(config('pagination.per_page'));
+        });
+
         return response()->json([
             'success' => true,
-            'data' => Task::where('user_id', auth()->user()->id)->simplePaginate(perPage: config('pagination.per_page')),
+            'data' => $tasks->items(),
         ]);
     }
 
@@ -29,6 +33,8 @@ class TaskService
             'due_date' => $request->due_date,
             'user_id' => auth()->user()->id,
         ]);
+
+        cache()->forget('tasks_user_'.auth()->user()->id);
 
         return response()->json(['message' => 'Task created successfully', 'task' => $task], 201);
     }
@@ -52,6 +58,7 @@ class TaskService
             'due_date' => $request->due_date,
             'status' => $request->status ?? $task->status,
         ]);
+        cache()->forget('tasks_user_'.auth()->user()->id);
 
         activity()->causedBy(Auth::user()->id)->performedOn($task)->log('Updated a task');
 
@@ -67,6 +74,7 @@ class TaskService
         }
 
         $task->update(['status' => Task::STATUS['completed']]);
+        cache()->forget('tasks_user_'.auth()->user()->id);
 
         return response()->json(['success' => true, 'message' => 'Task marked as completed']);
     }
@@ -80,6 +88,7 @@ class TaskService
         }
 
         $task->update(['status' => Task::STATUS['pending']]);
+        cache()->forget('tasks_user_'.auth()->user()->id);
 
         return response()->json(['success' => true, 'message' => 'Task marked as pending']);
     }
@@ -91,6 +100,7 @@ class TaskService
         activity()->causedBy(Auth::user()->id)->performedOn($task)->log('Deleted a task');
 
         $task->delete();
+        cache()->forget('tasks_user_'.auth()->user()->id);
 
         return response()->json(['success' => true, 'message' => 'Task deleted successfully']);
     }

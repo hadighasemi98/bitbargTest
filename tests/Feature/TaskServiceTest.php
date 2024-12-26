@@ -27,7 +27,6 @@ class TaskServiceTest extends TestCase
     {
         $user = User::factory()->create();
         Task::factory()->count(3)->create(['user_id' => $user->id]);
-
         (new Permission)->create(['name' => 'view-tasks']);
 
         $user->givePermissionTo('view-tasks');

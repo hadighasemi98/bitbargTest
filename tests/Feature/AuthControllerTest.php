@@ -16,8 +16,8 @@ class AuthControllerTest extends TestCase
         parent::setUp();
 
         $this->artisan(
-            'passport:client',
-            ['--name' => 'user', '--personal' => null]
+            command: 'passport:client',
+            parameters: ['--name' => 'user', '--personal' => null]
         );
 
     }
@@ -77,7 +77,7 @@ class AuthControllerTest extends TestCase
         ]);
     }
 
-    public function test_must_be_login(): void
+    public function test_must_login_user(): void
     {
         User::factory()->create([
             'email' => 'test@example.com',
