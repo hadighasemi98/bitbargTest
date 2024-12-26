@@ -1,19 +1,19 @@
 <?php
 
-namespace Tests\Unit\Http\Requests\Auth;
+namespace Tests\Unit;
 
 use App\Http\Requests\Auth\SignUpRequest;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 
 class SignUpRequestTest extends TestCase
 {
-    /**
-     * Test the validation rules of the SignUpRequest.
-     */
+    use RefreshDatabase;
+
     public function test_validation_rules()
     {
-        $request = new SignUpRequest();
+        $request = new SignUpRequest;
 
         $rules = $request->rules();
 
@@ -23,9 +23,6 @@ class SignUpRequestTest extends TestCase
         ], $rules);
     }
 
-    /**
-     * Test the authorization of the SignUpRequest.
-     */
     public function test_authorization()
     {
         $request = new SignUpRequest;
@@ -33,9 +30,6 @@ class SignUpRequestTest extends TestCase
         $this->assertFalse($request->authorize());
     }
 
-    /**
-     * Test that the request validates correctly with valid data.
-     */
     public function test_request_with_valid_data()
     {
         $data = [
@@ -49,9 +43,6 @@ class SignUpRequestTest extends TestCase
         $this->assertTrue($validator->passes());
     }
 
-    /**
-     * Test that the request fails validation with invalid data.
-     */
     public function test_request_with_invalid_data()
     {
         $data = [

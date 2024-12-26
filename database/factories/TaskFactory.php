@@ -15,8 +15,8 @@ class TaskFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph,
-            'due_date' => $this->faker->dateTimeBetween('now', '+1 year'),
-            'user_id' => User::factory(),
+            'due_date' => now()->addDay(),
+            'user_id' => fn () => User::factory(),
         ];
     }
 }

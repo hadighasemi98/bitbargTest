@@ -23,6 +23,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Passport::loadKeysFrom(base_path('storage/oauth'));
+
         $this->registerPolicies();
 
         Passport::tokensCan(scopes: [
@@ -35,6 +37,10 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define(ability: 'check_role', callback: function ($user, $role) {
             return $user->hasRole($role);
         });
+
+        Passport::tokensExpireIn(now()->addDays(1));
+        Passport::refreshTokensExpireIn(now()->addDays(30));
+        Passport::personalAccessTokensExpireIn(now()->addMonths(6));
 
     }
 }

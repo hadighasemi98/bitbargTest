@@ -12,7 +12,10 @@ class TaskService
 {
     public function index(): JsonResponse
     {
-        return response()->json(Task::where('user_id', auth()->user()->id)->simplePaginate(perPage: config('pagination.per_page')));
+        return response()->json([
+            'success' => true,
+            'data' => Task::where('user_id', auth()->user()->id)->simplePaginate(perPage: config('pagination.per_page')),
+        ]);
     }
 
     public function store(CreateTaskRequest $request): JsonResponse
@@ -29,14 +32,16 @@ class TaskService
 
     public function show(int $id): JsonResponse
     {
-        $task = Task::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();
-
-        return response()->json(['success' => true, 'data' => $task]);
+        return response()->json([
+            'success' => true,
+            'data' => Task::where('user_id', auth()->user()->id)->findOrFail($id),
+        ]);
     }
 
     public function update(UpdateTaskRequest $request, int $id): JsonResponse
     {
-        $task = Task::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();
+
+        $task = Task::where('user_id', auth()->user()->id)->findOrFail($id);
 
         $task->update([
             'title' => $request->title,
@@ -52,7 +57,12 @@ class TaskService
 
     public function markAsCompleted(int $id): JsonResponse
     {
-        $task = Task::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();
+        $task = Task::where('user_id', auth()->user()->id)->findOrFail($id);
+
+        if ($task->status == Task::STATUS['completed']) {
+            return response()->json(['success' => false, 'message' => 'Task already marked as completed'], 406);
+        }
+
         $task->update(['status' => Task::STATUS['completed']]);
 
         return response()->json(['success' => true, 'message' => 'Task marked as completed']);
@@ -61,6 +71,11 @@ class TaskService
     public function markAsPending(int $id): JsonResponse
     {
         $task = Task::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();
+
+        if ($task->status == Task::STATUS['pending']) {
+            return response()->json(['success' => false, 'message' => 'Task already marked as pending'], 406);
+        }
+
         $task->update(['status' => Task::STATUS['pending']]);
 
         return response()->json(['success' => true, 'message' => 'Task marked as pending']);
@@ -68,12 +83,12 @@ class TaskService
 
     public function destroy(int $id): JsonResponse
     {
-        $task = Task::where('id', $id)->where('user_id', auth()->user()->id)->firstOrFail();
+        $task = Task::where('user_id', auth()->user()->id)->findOrFail($id);
 
         activity()->causedBy(Auth::user()->id)->performedOn($task)->log('Deleted a task');
 
         $task->delete();
 
-        return response()->json(['message' => 'Task deleted successfully']);
+        return response()->json(['success' => true, 'message' => 'Task deleted successfully']);
     }
 }

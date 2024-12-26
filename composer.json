@@ -12,7 +12,6 @@
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
         "laravel/passport": "^12.3",
-        "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "predis/predis": "^2.3",
         "spatie/laravel-activitylog": "^4.9",

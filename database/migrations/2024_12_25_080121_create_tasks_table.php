@@ -16,10 +16,10 @@ return new class extends Migration
             $table->string('title')->index();
             $table->text('description')->nullable();
             $table->tinyInteger('status')->default(0)->index();
-            $table->date('due_date')->nullable();
             $table->foreignId('user_id')->constrained();
-            $table->softDeletes();
+            $table->timestamp('due_date')->nullable();
             $table->timestamp('completed_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

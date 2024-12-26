@@ -18,11 +18,11 @@ class RolesAndPermissionsSeeder extends Seeder
         $userRole = Role::create(['name' => 'user']);
 
         // Create permissions
-        Permission::create(['name' => 'manage tasks']);
-        Permission::create(['name' => 'view tasks']);
+        Permission::create(['name' => 'manage-tasks']);
+        Permission::create(['name' => 'view-tasks']);
 
         // Assign permissions to roles
-        $adminRole->givePermissionTo(['manage tasks', 'view tasks']);
-        $userRole->givePermissionTo('view tasks');
+        $adminRole->givePermissionTo(['manage-tasks', 'view-tasks']);
+        $userRole->givePermissionTo('view-tasks');
     }
 }
